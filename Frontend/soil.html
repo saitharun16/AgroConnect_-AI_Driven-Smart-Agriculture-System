@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil Type Detection</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c5e1a;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2c5e1a;
+            margin-top: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .upload-section {
+            background-color: #f9f9f9;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 2px dashed #2c5e1a;
+        }
+        .upload-box {
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .upload-box input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .upload-icon {
+            font-size: 50px;
+            color: #2c5e1a;
+            margin-bottom: 15px;
+        }
+        .preview-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .btn {
+            background-color: #2c5e1a;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background-color: #1e3e11;
+        }
+        .btn-secondary {
+            background-color: #666;
+        }
+        .btn-secondary:hover {
+            background-color: #555;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #2c5e1a;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        .manual-section {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f0f7eb;
+            border-radius: 8px;
+        }
+        .question {
+            margin-bottom: 25px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #2c5e1a;
+        }
+        label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        .error-message {
+            color: #d9534f;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+        .continue-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #2c5e1a;
+            text-decoration: underline;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Soil Type Detection</h1>
+        
+        <div class="upload-section">
+            <h2>Upload Soil Image</h2>
+            <p>Upload a clear image of your soil sample for automatic detection</p>
+            
+            <div class="upload-box" id="uploadBox">
+                <div class="upload-icon">📷</div>
+                <p>Click or drag and drop to upload an image</p>
+                <input type="file" id="soilImage" accept="image/*">
+            </div>
+            
+            <div class="preview-container" id="previewContainer">
+                <img id="imagePreview" src="" alt="Soil preview">
+                <button class="btn btn-secondary" style="margin-top: 15px;" id="removeImage">Remove Image</button>
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p>Analyzing soil type...</p>
+        </div>
+        
+        <div class="manual-section">
+            <h2>Not Sure? Answer These Questions</h2>
+            <p>If you don't have an image to upload, you can answer these questions to help identify your soil type:</p>
+            
+            <div class="question">
+                <p>1. How does your soil feel when you rub it between your fingers?</p>
+                <label><input type="radio" name="texture" value="sandy"> Gritty and rough like sand</label>
+                <label><input type="radio" name="texture" value="silt"> Smooth like flour or talcum powder</label>
+                <label><input type="radio" name="texture" value="clay"> Sticky and can be molded when wet</label>
+                <label><input type="radio" name="texture" value="loam"> Somewhat gritty but also smooth and slightly sticky</label>
+            </div>
+            
+            <div class="question">
+                <p>2. When moistened and squeezed, how does your soil behave?</p>
+                <label><input type="radio" name="squeeze" value="sandy"> Falls apart completely when released</label>
+                <label><input type="radio" name="squeeze" value="silt"> Forms a ball that breaks easily</label>
+                <label><input type="radio" name="squeeze" value="clay"> Forms a firm ball that doesn't break easily</label>
+                <label><input type="radio" name="squeeze" value="loam"> Forms a ball that crumbles when lightly poked</label>
+            </div>
+            
+            <div class="question">
+                <p>3. How quickly does water drain through your soil?</p>
+                <label><input type="radio" name="drainage" value="sandy"> Very quickly (within minutes)</label>
+                <label><input type="radio" name="drainage" value="loam"> Moderately (within an hour)</label>
+                <label><input type="radio" name="drainage" value="silt"> Somewhat slowly (several hours)</label>
+                <label><input type="radio" name="drainage" value="clay"> Very slowly or pools on the surface</label>
+            </div>
+        </div>
+        
+        <div class="buttons-container">
+            <button class="btn" id="analyzeBtn">Analyze Soil</button>
+            <a href="dashboard.html" class="btn btn-secondary">Continue to Dashboard</a>
+        </div>
+        
+        <a href="dashboard.html" class="continue-link">Skip detection and go directly to dashboard</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('soilImage');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewContainer = document.getElementById('previewContainer');
+            const removeImageBtn = document.getElementById('removeImage');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Handle file selection
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (!file.type.match('image.*')) {
+                        showError('Please select a valid image file');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        imagePreview.src = event.target.result;
+                        previewContainer.style.display = 'block';
+                        errorMessage.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Remove selected image
+            removeImageBtn.addEventListener('click', function() {
+                fileInput.value = '';
+                imagePreview.src = '';
+                previewContainer.style.display = 'none';
+            });
+            
+            // Handle analysis button
+            analyzeBtn.addEventListener('click', function() {
+                const file = fileInput.files[0];
+                
+                // If no image is uploaded, check if questionnaire is filled
+                if (!file) {
+                    const textureSelected = document.querySelector('input[name="texture"]:checked');
+                    const squeezeSelected = document.querySelector('input[name="squeeze"]:checked');
+                    const drainageSelected = document.querySelector('input[name="drainage"]:checked');
+                    
+                    if (!textureSelected || !squeezeSelected || !drainageSelected) {
+                        showError('Please upload an image or complete the questionnaire');
+                        return;
+                    }
+                    
+                    // Process questionnaire data and redirect to dashboard
+                    processManualDetection(
+                        textureSelected.value,
+                        squeezeSelected.value,
+                        drainageSelected.value
+                    );
+                    return;
+                }
+                
+                // Process image upload
+                processImageUpload(file);
+            });
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 4000);
+            }
+            
+            function processImageUpload(file) {
+                loadingIndicator.style.display = 'block';
+                
+                // Create FormData to send image to server
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                // // Simulate API call to backend
+                // setTimeout(() => {
+                //     loadingIndicator.style.display = 'none';
+                    
+                //     // Simulate response data (in real app, this would come from the server)
+                //     const soilData = {
+                //         soil_type: 'Loamy Soil',
+                //         confidence: 0.89,
+                //         properties: {
+                //             texture: 'Medium',
+                //             drainage: 'Good',
+                //             nutrients: 'High',
+                //             ph: '6.8'
+                //         }
+                //     };
+                    
+                //     // Store data in sessionStorage to pass to dashboard
+                //     sessionStorage.setItem('soilData', JSON.stringify(soilData));
+                    
+                //     // Redirect to dashboard
+                //     window.location.href = 'dashboard.html';
+                // }, 2000);
+                
+                // In a real application, you would have code like this:
+                
+                fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    sessionStorage.setItem('soilData', JSON.stringify(data));
+                    alert(`soil type is ${JSON.stringify(data)}`)
+                    window.location.href = 'dashboard.html';
+                })
+                .catch(error => {
+                    loadingIndicator.style.display = 'none';
+                    alert("error")
+                    console.log(error)
+                    showError('Error analyzing soil: ' + error.message);
+                });
+                
+            }
+            
+            function processManualDetection(texture, squeeze, drainage) {
+                loadingIndicator.style.display = 'block';
+                
+                // Determine soil type based on manual inputs
+                let soilType;
+                
+                // Simple logic to determine soil type
+                // In a real app, this would be more sophisticated
+                if (texture === 'sandy' && squeeze === 'sandy') {
+                    soilType = 'Sandy Soil';
+                } else if (texture === 'clay' && squeeze === 'clay') {
+                    soilType = 'Clay Soil';
+                } else if (texture === 'silt' && squeeze === 'silt') {
+                    soilType = 'Silty Soil';
+                } else if (texture === 'loam' || squeeze === 'loam') {
+                    soilType = 'Loam Soil';
+                } else {
+                    // If mixed results, weigh the answers
+                    const counts = {
+                        'sandy': 0,
+                        'silt': 0,
+                        'clay': 0,
+                        'loam': 0
+                    };
+                    
+                    counts[texture]++;
+                    counts[squeeze]++;
+                    counts[drainage]++;
+                    
+                    const maxType = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+                    
+                    switch (maxType) {
+                        case 'sandy':
+                            soilType = 'Sandy Soil';
+                            break;
+                        case 'silt':
+                            soilType = 'Silty Soil';
+                            break;
+                        case 'clay':
+                            soilType = 'Clay Soil';
+                            break;
+                        case 'loam':
+                            soilType = 'Loam Soil';
+                            break;
+                        default:
+                            soilType = 'Mixed Soil';
+                    }
+                }
+                
+                // Create soil data object based on questionnaire
+                const soilData = {
+                    soil_type: soilType,
+                    detection_method: 'manual',
+                    properties: {
+                        texture: texture,
+                        squeeze_test: squeeze,
+                        drainage: drainage,
+                    }
+                };
+                
+                setTimeout(() => {
+                    loadingIndicator.style.display = 'none';
+                    
+                    // Store data in sessionStorage to pass to dashboard
+                    sessionStorage.setItem('soilData', JSON.stringify(soilData));
+                    
+                    // Redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

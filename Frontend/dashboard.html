@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer's Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-light: #81C784;
+            --primary-dark: #388E3C;
+            --secondary: #FFA000;
+            --light: #F9FBE7;
+            --dark: #1B5E20;
+            --danger: #D32F2F;
+            --info: #1976D2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F5F5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .date-time {
+            text-align: right;
+        }
+        
+        h1, h2, h3 {
+            margin-bottom: 10px;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sensor-readings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .sensor {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: var(--light);
+            transition: all 0.3s ease;
+        }
+        
+        .sensor:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .sensor i {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .sensor:hover i {
+            color: white;
+        }
+        
+        .sensor-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .weather-periods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .weather-period {
+            text-align: center;
+            background-color: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .weather-period:hover {
+            background-color: var(--info);
+            color: white;
+        }
+        
+        .weather-period i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--info);
+        }
+        
+        .weather-period:hover i {
+            color: white;
+        }
+        
+        .weather-temp {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .plant-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .plant-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .plant-details {
+            text-align: center;
+            width: 100%;
+        }
+        
+        .plant-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+        
+        .caution-list {
+            list-style-type: none;
+        }
+        
+        .caution-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #FFF9C4;
+            transition: all 0.3s ease;
+        }
+        
+        .caution-item:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .caution-item i {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        .caution-item:hover i {
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .date-time {
+                text-align: left;
+            }
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1><i class="fas fa-seedling"></i> Farmer's Dashboard</h1>
+                    <p>Your complete agricultural assistant</p>
+                </div>
+                <div class="date-time">
+                    <h2 id="current-date"></h2>
+                    <p id="current-time"></p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <!-- Sensor Readings Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-microchip"></i>
+                        <h2>Current Conditions</h2>
+                    </div>
+                    <button id="refresh-sensors" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="sensor-readings">
+                    <div class="sensor">
+                        <i class="fas fa-temperature-high"></i>
+                        <div class="sensor-name">Temperature</div>
+                        <div id="temperature" class="sensor-value">--°C</div>
+                    </div>
+                    <div class="sensor">
+                        <i class="fas fa-tint"></i>
+                        <div class="sensor-name">Humidity</div>
+                        <div id="humidity" class="sensor-value">--%</div>
+                    </div>
+                    <div class="sensor">
+                        <i class="fas fa-water"></i>
+                        <div class="sensor-name">Soil Moisture</div>
+                        <div id="soil-moisture" class="sensor-value"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Weather Forecast Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-cloud-sun"></i>
+                        <h2>Weather Forecast</h2>
+                    </div>
+                    <button id="refresh-weather" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="weather-periods">
+                    <div class="weather-period">
+                        <h3>Today</h3>
+                        <i id="today-icon" class="fas fa-sun"></i>
+                        <div id="today-temp" class="weather-temp">--°C</div>
+                        <div id="today-desc">--</div>
+                    </div>
+                    <div class="weather-period">
+                        <h3>This Week</h3>
+                        <i id="week-icon" class="fas fa-cloud"></i>
+                        <div id="week-temp" class="weather-temp">--°C</div>
+                        <div id="week-desc">--</div>
+                    </div>
+                    <div class="weather-period">
+                        <h3>This Month</h3>
+                        <i id="month-icon" class="fas fa-cloud-sun-rain"></i>
+                        <div id="month-temp" class="weather-temp">--°C</div>
+                        <div id="month-desc">--</div>
+                    </div>
+                    <div class="weather-period">
+                        <h3>This Year</h3>
+                        <i id="year-icon" class="fas fa-cloud-sun"></i>
+                        <div id="year-temp" class="weather-temp">--°C</div>
+                        <div id="year-desc">--</div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Cautions Card -->
+             <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>Cautions & Alerts</h2>
+                    </div>
+                    <button id="refresh-cautions" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <ul class="caution-list" id="caution-list">
+                    <li class="caution-item">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Loading cautions and alerts...</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+            <!-- Plant Prediction Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-leaf"></i>
+                        <h2>Plant Prediction</h2>
+                    </div>
+                    <button id="refresh-plant" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div id="plant-container">
+                </div>
+            </div>
+        <footer>
+            <p>© 2025 Farmer's Dashboard | <a href="#" id="help-link">Help</a> | <a href="#" id="contact-link">Contact Support</a></p>
+        </footer>
+    </div>
+    
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader"></div>
+    </div>
+    
+    <div id="notification" class="notification">
+        Data updated successfully!
+    </div>
+    
+    <script>
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit' };
+            
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
+        }
+        
+        // Update date and time every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // API endpoints (dummy)
+        // const API = {
+        //     sensors: 'https://api.example.com/farm/sensors',
+        //     weather: 'https://api.example.com/farm/weather',
+        //     plantPrediction: 'https://api.example.com/farm/plant-prediction',
+        //     cautions: 'https://api.example.com/farm/cautions'
+        // };
+        
+        // Fetch sensor data
+        async function fetchSensorData() {
+            try {
+                // In a real application, you would fetch data from your API
+                // For now, we'll use dummy data
+                const apiUrl = `http://localhost:3000/data`;
+
+             // Fetch real weather data
+              const response = await fetch(apiUrl);
+               if (!response.ok) throw new Error("Failed to fetch weather data");
+               const data = await response.json();  // Convert response body to JSON                
+                updateSensorData(data);
+                showNotification('Sensor data updated!');
+            } catch (error) {
+                console.error('Error fetching sensor data:', error);
+                showNotification('Failed to update sensor data!');
+            }
+        }
+        
+        // Update sensor values in the UI
+        function updateSensorData(data) {
+            document.getElementById('temperature').textContent = `${data.temperature}°C`;
+            document.getElementById('humidity').textContent = `${data.humidity}%`;
+            document.getElementById('soil-moisture').textContent = `${((data.moisture) / 1023 * 100).toFixed(2)}%`;
+        }
+        
+        // Fetch weather forecast
+        async function fetchWeatherData() {
+    try {
+        const apiKey = '64169bc7301b276e8ed0e8e52b30d0d8'; // Replace with your actual API key
+        const city = 'Mumbai'; // Replace with your desired city
+        const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=26.676&lon=91.368192&units=metric&appid=${apiKey}`;
+
+        // Fetch real weather data
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Failed to fetch weather data");
+
+        const data = await response.json();
+        if (!data.list || data.list.length === 0) throw new Error("No forecast data available");
+
+        // Extract today's forecast (first entry)
+        const todayForecast = data.list[0];
+
+        // Calculate weekly, monthly, and yearly trends
+        const weekForecast = data.list[8];  // Roughly 24 hours later
+        const monthForecast = data.list[16]; // Roughly 3 days later
+        const yearForecast = data.list[data.list.length - 1]; // Last available entry
+
+        const weatherData = {
+            today: {
+                icon: todayForecast.weather[0].icon,
+                temp: Math.round(todayForecast.main.temp),
+                description: todayForecast.weather[0].description
+            },
+            week: {
+                icon: weekForecast.weather[0].icon,
+                temp: Math.round(weekForecast.main.temp),
+                description: weekForecast.weather[0].description
+            },
+            month: {
+                icon: monthForecast.weather[0].icon,
+                temp: Math.round(monthForecast.main.temp),
+                description: monthForecast.weather[0].description
+            },
+            year: {
+                icon: yearForecast.weather[0].icon,
+                temp: Math.round(yearForecast.main.temp),
+                description: yearForecast.weather[0].description
+            }
+        };
+
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 700));
+
+        updateWeatherData(weatherData);
+        showNotification('Weather forecast updated!');
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        showNotification('Failed to update weather data!');
+    }
+}
+
+        
+        // Update weather values in the UI
+        function updateWeatherData(data) {
+            // Today
+            document.getElementById('today-icon').className = `fas fa-${data.today.icon}`;
+            document.getElementById('today-temp').textContent = `${data.today.temp}°C`;
+            document.getElementById('today-desc').textContent = data.today.description;
+            
+            // Week
+            document.getElementById('week-icon').className = `fas fa-${data.week.icon}`;
+            document.getElementById('week-temp').textContent = `${data.week.temp}°C`;
+            document.getElementById('week-desc').textContent = data.week.description;
+            
+            // Month
+            document.getElementById('month-icon').className = `fas fa-${data.month.icon}`;
+            document.getElementById('month-temp').textContent = `${data.month.temp}°C`;
+            document.getElementById('month-desc').textContent = data.month.description;
+            
+            // Year
+            document.getElementById('year-icon').className = `fas fa-${data.year.icon}`;
+            document.getElementById('year-temp').textContent = `${data.year.temp}°C`;
+            document.getElementById('year-desc').textContent = data.year.description;
+        }
+        
+        // Fetch plant prediction
+        async function fetchPlantPrediction() {
+                try {
+                    const response = await fetch("http://localhost:3000/gemini"); // Replace with your actual API URL
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    // Simulate network delay (optional)
+                    await new Promise(resolve => setTimeout(resolve, 800));
+
+                    updatePlantPredictions(data);
+                    showNotification('Plant prediction updated!');
+                } catch (error) {
+                    console.error('Error fetching plant prediction:', error);
+                    showNotification('Failed to update plant prediction!');
+                }
+       }
+
+        
+        // Update plant prediction in the UI
+        function updatePlantPredictions(data) {
+            const plantContainer = document.getElementById("plant-container"); // Ensure this div wraps all plant cards
+            plantContainer.innerHTML = ""; // Clear previous results
+
+            data.crops.forEach((crop) => {
+                const plantCard = document.createElement("div");
+                plantCard.classList.add("plant-card");
+
+                plantCard.innerHTML = `
+                    <img class="plant-image" src="${crop.image_url}" alt="${crop.crop}">
+                    <div class="plant-details">
+                        <div class="plant-name">${crop.crop}</div>
+                        <p class="plant-description">This crop is recommended based on your soil and weather conditions.</p>
+                    </div>
+                `;
+
+            plantContainer.appendChild(plantCard);
+        });
+}
+        
+        // Fetch cautions
+        async function fetchCautions() {
+            try {
+                const response = await fetch("http://localhost:3000/cautions"); // Replace with your actual API URL
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!data.cautions || !Array.isArray(data.cautions)) {
+                    throw new Error("Invalid data format received from API");
+                }
+
+                updateCautions(data.cautions);
+                showNotification("Cautions updated!");
+            } catch (error) {
+                console.error("Error fetching cautions:", error);
+                showNotification("Failed to update cautions!");
+            }
+}
+
+        // Update cautions in the UI
+        function updateCautions(data) {
+            const cautionList = document.getElementById('caution-list');
+            cautionList.innerHTML = '';
+            
+            data.forEach(caution => {
+                const li = document.createElement('li');
+                li.className = 'caution-item';
+                li.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>${caution}</span>
+                `;
+                cautionList.appendChild(li);
+            });
+        }
+        
+        // Initial data load
+        async function loadInitialData() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            try {
+                await Promise.all([
+                    fetchSensorData(),
+                    fetchWeatherData(),
+                    fetchPlantPrediction(),
+                    fetchCautions()
+                ]);
+            } catch (error) {
+                console.error('Error loading initial data:', error);
+                showNotification('Error loading data. Please try again.');
+            } finally {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+        }
+        
+        // Event listeners for refresh buttons
+        document.getElementById('refresh-sensors').addEventListener('click', fetchSensorData);
+        document.getElementById('refresh-weather').addEventListener('click', fetchWeatherData);
+        document.getElementById('refresh-plant').addEventListener('click', fetchPlantPrediction);
+        document.getElementById('refresh-cautions').addEventListener('click', fetchCautions);
+        
+        // Help and contact links
+        document.getElementById('help-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Help documentation will be available here.');
+        });
+        
+        document.getElementById('contact-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Contact support at support@farmersdashboard.com');
+        });
+        
+        // Load initial data when the page loads
+        window.addEventListener('load', loadInitialData);
+    </script>
+</body>
+</html>
