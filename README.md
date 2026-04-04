@@ -1,4 +1,4 @@
-# AI-Powered Plant Health and Soil Suitability Analysis
+# smart-agriculture-iot-ai-system
 
 ## Overview
 This project is a smart agriculture system integrating IoT, AI, and real-time data processing to assist farmers in decision-making.
