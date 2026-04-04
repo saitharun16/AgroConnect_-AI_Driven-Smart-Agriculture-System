@@ -30,3 +30,21 @@ This project is a smart agriculture system integrating IoT, AI, and real-time da
 ## Future Work
 - Automated irrigation system
 - Real-time control integration
+
+## Demo / Screenshots
+
+### Dashboard Interface
+![Dashboard](https://github.com/user-attachments/assets/1a01b835-11b5-4cd2-b2ef-686c8e9941b1)
+
+### Profile
+![Sensor Data](https://github.com/user-attachments/assets/c390b813-3f31-46f3-98b5-5eb8990adebd)
+
+### AI Assistance
+![Soil Classification](https://github.com/user-attachments/assets/54470c2a-dc0c-4548-8df2-8252df6691ab)
+
+### Marketplace Visualization
+![Results](https://github.com/user-attachments/assets/16bd6ab7-11e8-4a98-b0c9-c3f17478be43)
+
+
+
+
