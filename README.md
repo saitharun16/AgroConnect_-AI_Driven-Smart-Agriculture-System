@@ -69,7 +69,13 @@ This project integrates IoT, AI/ML, and full-stack development to address real-w
 ## 🧪 Project Structure
 
 ---
+## 🌍 Real-World Impact
 
+- Reduces manual crop inspection effort  
+- Enables early disease detection  
+- Helps farmers make data-driven decisions  
+- Reduces dependency on middlemen through marketplace integration
+  
 ## ⚡ Key Highlights
 
 - End-to-end AI + IoT system implementation  
