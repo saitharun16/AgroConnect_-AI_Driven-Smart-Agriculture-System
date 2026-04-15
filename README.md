@@ -1,50 +1,42 @@
-# smart-agriculture-iot-ai-system
+# AgroConnect: AI-Driven Smart Agriculture System
 
 ## Overview
-This project is a smart agriculture system integrating IoT, AI, and real-time data processing to assist farmers in decision-making.
+AgroConnect is an AI-powered smart agriculture platform that uses drone-based imaging and deep learning to detect crop diseases and provide actionable recommendations to farmers.
 
-## Key Features
-- Real-time monitoring using sensors (soil moisture, temperature, NPK)
-- Soil classification using CNN (ESP32-CAM images)
-- Crop and fertilizer recommendation using AI models
-- Backend: Node.js + Flask
-- Dashboard for visualization
+## Features
+- Drone-based crop monitoring
+- CNN (VGG16) disease detection
+- Flask backend for prediction
+- Next.js frontend dashboard
+- Firebase authentication & database
+- Gemini AI chatbot for recommendations
+- Integrated agriculture marketplace
+
+## Tech Stack
+- Frontend: Next.js, React
+- Backend: Flask (Python)
+- AI/ML: CNN (VGG16), TensorFlow
+- Database: Firebase
+- Cloud: Google Drive API
 
 ## System Architecture
-1. Sensors collect environmental data
-2. Data sent to backend (Node.js)
-3. CNN model predicts soil type (Flask)
-4. AI model generates recommendations
-5. Dashboard displays results
+(You can add diagram image here)
 
-## Technologies Used
-- Arduino, ESP32-CAM
-- Python (Flask, ML models)
-- Node.js
-- React (Frontend)
+## How It Works
+1. Drone captures crop images
+2. Images uploaded to cloud
+3. Flask backend processes images
+4. CNN model predicts disease
+5. Results shown on dashboard
 
 ## Results
-- Soil classification accuracy: ~91%
-- Recommendation relevance: ~90%
+- Disease detection accuracy: ~80–81%
+- Real-time prediction system
 
-## Future Work
-- Automated irrigation system
-- Real-time control integration
+## Installation (Optional if working)
+Steps to run locally
 
-## Demo / Screenshots
-
-### Dashboard Interface
-![Dashboard](https://github.com/user-attachments/assets/1a01b835-11b5-4cd2-b2ef-686c8e9941b1)
-
-### Profile
-![Sensor Data](https://github.com/user-attachments/assets/c390b813-3f31-46f3-98b5-5eb8990adebd)
-
-### AI Assistance
-![Soil Classification](https://github.com/user-attachments/assets/54470c2a-dc0c-4548-8df2-8252df6691ab)
-
-### Marketplace Visualization
-![Results](https://github.com/user-attachments/assets/16bd6ab7-11e8-4a98-b0c9-c3f17478be43)
-
-
-
-
+## Future Improvements
+- Improve model accuracy
+- Real-time drone streaming
+- Expand crop datasets
