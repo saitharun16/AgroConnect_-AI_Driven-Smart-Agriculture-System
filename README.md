@@ -11,7 +11,7 @@ This project integrates IoT, AI/ML, and full-stack development to address real-w
 - Drone-based real-time crop monitoring
 - CNN (VGG16) based disease detection
 - Flask backend for ML inference
-- Next.js frontend dashboard
+- Next.js frontend dashboard.
 - Firebase authentication & real-time database
 - Gemini AI chatbot for crop guidance
 - Integrated agriculture marketplace
